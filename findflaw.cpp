@@ -16,7 +16,7 @@ struct Cell {
     vector<Box> flaws;
 };
 
-void findflaw(const std::vector<Cell>& cells) {
+void findflaw(const vector<Cell>& cells) {
     vector<Cell> flawCells1;
     vector<Cell> flawCells2;
     // 遍历每个Cell
@@ -39,7 +39,7 @@ void findflaw(const std::vector<Cell>& cells) {
                     // b2
                     cout << "直径大于0.25且小于等于0.5mm的瑕疵为" << flawCells1.size() << "个，存在点状不良" << endl;
                     // b3
-                    checkDistancesAndPrint(flawCells1);
+                    checkDistancesAndPrint(flawCells1, cell);
                 }
             }
         }
@@ -74,30 +74,25 @@ double calculateDistance(const Cell& cell1, const Cell& cell2) {
 }
 
 // 检查Cell之间的距离并输出信息
-void checkDistancesAndPrint(const vector<Cell>& cells) {
+void checkDistancesAndPrint(const vector<Cell>& cells, const Cell& cell) {
     // 遍历每对Cell
     for (size_t i = 0; i < cells.size(); ++i) {
-        for (size_t j = i + 1; j < cells.size(); ++j) {
-            double distance = calculateDistance(cells[i], cells[j]);
-            if (distance <= 5) {
-                cout << "探测到位于Cell(" << cells[i].i << ", " << cells[i].j << ")直径大于0.25且小于等于0.5mm的瑕疵(Box " << cells[i].flaws[0].label
-                          << ") 5mm内存在另一个瑕疵(Box " << cells[j].flaws[0].label << ")" << endl;
-            }
+        double distance = calculateDistance(cells[i], cell);
+        if (distance <= 3) {
+            cout << "探测到位于Cell(" << cell.i << ", " << cell.j << "中直径大于0.25且小于等于0.5mm的瑕疵5mm内存在另一个Cell(" << cells[i].i << ", " << cells[i].j << ")中也有瑕疵" << endl;
         }
     }
 }
 
 // 计算Cell之间的距离并统计符合条件的个数
-int checkDistancesAndCount(const vector<Cell>& cells) {
+int checkDistancesAndCount(const vector<Cell>& cells, const Cell& cell) {
     int count = 0;
     // 遍历每对Cell
     for (size_t i = 0; i < cells.size(); ++i) {
-        for (size_t j = i + 1; j < cells.size(); ++j) {
-            double distance = calculateDistance(cells[i], cells[j]);
+            double distance = calculateDistance(cells[i], cell);
             if (distance <= 3) {
                 count++;
             }
-        }
     }
     return count;
 }
