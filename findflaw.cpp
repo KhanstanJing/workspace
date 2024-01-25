@@ -53,7 +53,7 @@ void findflaw(const vector<Cell>& cells) {
                 // b2
                 flawCells2.push_back(cell);
                 // b3
-                count = checkDistancesAndCount(flawCells2);
+                count = checkDistancesAndCount(flawCells2, cell);
                 if (count > 2) {
                     // b3
                     cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")直径大于0.1且小于等于0.25mm的瑕疵(Box " << box.label << ") 1cm^2内存在另外大于两个瑕疵，存在点状不良" << endl;
