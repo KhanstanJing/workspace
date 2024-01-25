@@ -17,6 +17,8 @@ struct Cell {
 };
 
 void findflaw(const std::vector<Cell>& cells) {
+    vector<Cell> flawCells1;
+    vector<Cell> flawCells2;
     // 遍历每个Cell
     for (const Cell& cell : cells) {
         // 1. 挑选出所有直径大于0.5mm的瑕疵
@@ -27,7 +29,6 @@ void findflaw(const std::vector<Cell>& cells) {
         }
 
         // 2. 挑选出所有直径大于0.25mm且小于等于0.5mm的瑕疵
-        vector<Cell> flawCells1;
         for (const Box& box : cell.flaws) {
             if (0.25 < boxDiameter(box) && boxDiameter(box) <= 0.5) {
                 // b1
@@ -44,7 +45,6 @@ void findflaw(const std::vector<Cell>& cells) {
         }
 
         // 3. 挑选出所有直径大于0.1mm且小于等于0.25mm的瑕疵
-        std::vector<Cell> flawCells2;
         int count = 0;
         for (const Box& box : cell.flaws) {
             if (0.1 < boxDiameter(box) && boxDiameter(box) <= 0.25) {
@@ -103,7 +103,6 @@ int checkDistancesAndCount(const vector<Cell>& cells) {
 }
 
 int main() {
-    // 示例用法
     vector<Cell> cells;  
 
     findflaw(cells);
