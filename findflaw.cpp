@@ -17,14 +17,20 @@ struct Cell {
 };
 
 void findflaw(const vector<Cell>& cells) {
+    
     vector<Cell> flawCells1;
     vector<Cell> flawCells2;
+    vector<Cell> ::iterator iter;
+
     // 遍历每个Cell
     for (const Cell& cell : cells) {
+        int number = 0;
+        ++number;
+
         // 1. 挑选出所有直径大于0.5mm的瑕疵
         for (const Box& box : cell.flaws) {
             if (boxDiameter(box) > 0.5) {
-                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << box.label << ")的直径大小大于0.5mm，存在点状不良" << endl;
+                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << number << ")的直径大小大于0.5mm，存在点状不良" << endl;
             }
         }
 
@@ -32,7 +38,7 @@ void findflaw(const vector<Cell>& cells) {
         for (const Box& box : cell.flaws) {
             if (0.25 < boxDiameter(box) && boxDiameter(box) <= 0.5) {
                 // b1
-                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << box.label << ")的直径大小在0.25-0.5mm之间" << endl;
+                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << number << ")的直径大小在0.25-0.5mm之间" << endl;
                 // b2
                 flawCells1.push_back(cell);
                 if (flawCells1.size() > 4) {
@@ -49,14 +55,14 @@ void findflaw(const vector<Cell>& cells) {
         for (const Box& box : cell.flaws) {
             if (0.1 < boxDiameter(box) && boxDiameter(box) <= 0.25) {
                 // b1
-                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << box.label << ")的直径大小在0.1-0.25mm之间" << endl;
+                cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")的瑕疵(Box " << number << ")的直径大小在0.1-0.25mm之间" << endl;
                 // b2
                 flawCells2.push_back(cell);
                 // b3
                 count = checkDistancesAndCount(flawCells2, cell);
-                if (count > 2) {
+                if (count > 3) {
                     // b3
-                    cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")直径大于0.1且小于等于0.25mm的瑕疵(Box " << box.label << ") 1cm^2内存在另外大于两个瑕疵，存在点状不良" << endl;
+                    cout << "探测到位于Cell(" << cell.i << ", " << cell.j << ")直径大于0.1且小于等于0.25mm的瑕疵(Box " << number << ") 1cm^2内存在另外大于两个瑕疵，存在点状不良" << endl;
                 }
             }
         }
@@ -65,7 +71,7 @@ void findflaw(const vector<Cell>& cells) {
 
 // 计算瑕疵的直径
 double boxDiameter(const Box& box) {
-    return max(box.right - box.left, box.down - box.up);
+    return max((box.right - box.left)/340, (box.down - box.up)/340);
 }
 
 // 计算两个Cell之间的距离
@@ -89,10 +95,10 @@ int checkDistancesAndCount(const vector<Cell>& cells, const Cell& cell) {
     int count = 0;
     // 遍历每对Cell
     for (size_t i = 0; i < cells.size(); ++i) {
-            double distance = calculateDistance(cells[i], cell);
-            if (distance <= 3) {
-                count++;
-            }
+        double distance = calculateDistance(cells[i], cell);
+        if (distance <= 3) {
+            count++;
+        }
     }
     return count;
 }
